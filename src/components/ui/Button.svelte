@@ -4,17 +4,12 @@
   import Icon from "$components/ui/Icon.svelte";
   import Loader from "$components/ui/Loader.svelte";
 
+  //*******************************************************************************
   // Variables
   //*******************************************************************************
   const dispatch = createEventDispatcher();
 
-  // State
   //*******************************************************************************
-  let buttonClass: string = "";
-  let loaderColor: string = "";
-  let textColorVariant: string = "";
-  let bgColorVariant: string = "";
-
   // Props
   //*******************************************************************************
   export let model: string = "bg";
@@ -29,6 +24,15 @@
   export let starticon: string = "";
   export let endicon: string = "";
 
+  //*******************************************************************************
+  // State
+  //*******************************************************************************
+  let buttonClass: string = "";
+  let loaderColor: string = "";
+  let textColorVariant: string = "";
+  let bgColorVariant: string = "";
+
+  //*******************************************************************************
   // Computed
   //*******************************************************************************
   $: {
@@ -66,7 +70,8 @@
     }
   }
 
-  // Methods
+  //*******************************************************************************
+  // Emit
   //*******************************************************************************
   const onClick = (event: Event) => dispatch("click", event);
 </script>
@@ -81,13 +86,26 @@
         --bgColorVariant: {bgColorVariant};
     "
     title={loading ? "通信中..." : title}
+    aria-label={loading ? "通信中..." : title}
   >
     {#if loading}
       <Loader model="spin" color={loaderColor} />
     {:else}
-      {#if starticon}<span class="icon"><Icon>{starticon}</Icon></span>{/if}
-      <span class="text"><slot /></span>
-      {#if endicon}<span class="icon"><Icon>{endicon}</Icon></span>{/if}
+      {#if starticon}
+        <span class="icon"><Icon>{starticon}</Icon></span>
+      {/if}
+
+      <span class="text">
+        {#if $$slots.default}
+          <slot />
+        {:else}
+          {title}
+        {/if}
+      </span>
+
+      {#if endicon}
+        <span class="icon"><Icon>{endicon}</Icon></span>
+      {/if}
     {/if}
   </a>
 {:else}
@@ -98,6 +116,7 @@
         --textColorVariant: {textColorVariant};
         --bgColorVariant: {bgColorVariant};
     "
+    title={loading ? "通信中..." : title}
     aria-label={loading ? "通信中..." : title}
     {disabled}
     on:click={onClick}
@@ -105,9 +124,21 @@
     {#if loading}
       <Loader model="spin" color={loaderColor} />
     {:else}
-      {#if starticon}<span class="icon"><Icon>{starticon}</Icon></span>{/if}
-      <span class="text"><slot /></span>
-      {#if endicon}<span class="icon"><Icon>{endicon}</Icon></span>{/if}
+      {#if starticon}
+        <span class="icon"><Icon>{starticon}</Icon></span>
+      {/if}
+
+      <span class="text">
+        {#if $$slots.default}
+          <slot />
+        {:else}
+          {title}
+        {/if}
+      </span>
+
+      {#if endicon}
+        <span class="icon"><Icon>{endicon}</Icon></span>
+      {/if}
     {/if}
   </button>
 {/if}
